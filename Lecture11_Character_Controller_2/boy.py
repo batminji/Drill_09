@@ -3,26 +3,34 @@
 from pico2d import load_image, SDL_KEYDOWN, SDLK_SPACE, get_time, SDLK_RIGHT, SDLK_LEFT, SDL_KEYUP, SDLK_a
 import math
 
+
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
 
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
+
 def right_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
+
 
 def right_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_RIGHT
 
+
 def left_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LEFT
+
 
 def left_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 
+
 def a_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
+
 
 def a_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a
@@ -54,6 +62,7 @@ class Idle:
     def draw(boy):
         boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
 
+
 class Sleep:
 
     @staticmethod
@@ -71,9 +80,11 @@ class Sleep:
     @staticmethod
     def draw(boy):
         if boy.action == 2:
-            boy.image.clip_composite_draw(boy.frame * 100, 200, 100, 100, math.pi / 2, '', boy.x + 25, boy.y - 25, 100, 100)
+            boy.image.clip_composite_draw(boy.frame * 100, 200, 100, 100, math.pi / 2, '', boy.x + 25, boy.y - 25, 100,
+                                          100)
         else:
-            boy.image.clip_composite_draw(boy.frame * 100, 300, 100, 100, math.pi / 2, '', boy.x - 25, boy.y - 25, 100, 100)
+            boy.image.clip_composite_draw(boy.frame * 100, 300, 100, 100, math.pi / 2, '', boy.x - 25, boy.y - 25, 100,
+                                          100)
 
 
 class Run:
@@ -94,10 +105,10 @@ class Run:
         boy.frame = (boy.frame + 1) % 8
         boy.x += boy.dir * 5
 
-
     @staticmethod
     def draw(boy):
         boy.image.clip_draw(boy.frame * 100, boy.action * 100, 100, 100, boy.x, boy.y)
+
 
 class AutoRun:
     @staticmethod
@@ -133,11 +144,13 @@ class AutoRun:
 class StateMachine:
     def __init__(self, boy):
         self.boy = boy
-        self.cur_state = AutoRun
+        self.cur_state = Sleep
         self.transition = {
-            Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, a_down: AutoRun, a_up: AutoRun, time_out: Sleep},
+            Idle: {right_down: Run, left_down: Run, left_up: Run, right_up: Run, a_down: AutoRun, a_up: AutoRun,
+                   time_out: Sleep},
             Run: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, a_down: AutoRun, a_up: AutoRun},
-            Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle, a_down: AutoRun, a_up: AutoRun},
+            Sleep: {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle, a_down: AutoRun,
+                    a_up: AutoRun},
             AutoRun: {time_out: Idle, right_down: Run, right_up: Run, left_down: Run, left_up: Run}
         }
 
@@ -158,8 +171,6 @@ class StateMachine:
                 self.cur_state.enter(self.boy, e)
                 return True
         return False
-
-
 
 
 class Boy:
